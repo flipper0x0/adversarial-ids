@@ -1,0 +1,26 @@
+# Core ML + data
+numpy>=1.24,<2.0          # pinned <2.0 for ART/ecosystem compatibility
+pandas>=2.0,<2.3
+scikit-learn>=1.3,<1.6
+xgboost>=2.0,<2.2
+pyarrow>=14.0
+joblib>=1.3
+
+# Deep learning (CPU build is fine; install the CUDA build if you have a GPU)
+torch>=2.1,<2.4
+
+# Adversarial attacks/defenses
+adversarial-robustness-toolbox>=1.17,<1.19
+
+# Imbalance handling (optional SMOTE path)
+imbalanced-learn>=0.11,<0.13
+
+# Plotting + dashboard
+matplotlib>=3.7
+seaborn>=0.12
+plotly>=5.18
+streamlit>=1.30
+
+# Misc
+pyyaml>=6.0
+tqdm>=4.66

@@ -1,0 +1,91 @@
+# =========================================================================== #
+# Central configuration. Everything tunable lives here so runs are            #
+# reproducible (NFR-1). Change values here, not in the code.                   #
+# =========================================================================== #
+
+seed: 42
+
+# Which dataset the numbered scripts use, and the second dataset for the
+# cross-dataset validation stage (Stage 9). Options: synthetic, cicids2017,
+# unsw_nb15.  Start with 'synthetic' to verify your install end-to-end.
+dataset: synthetic
+cross_dataset: unsw_nb15
+
+paths:
+  results: results
+  processed: results/_processed
+
+datasets:
+  synthetic:
+    path: null            # generated in memory; no download needed
+  cicids2017:
+    path: data/raw/cicids2017     # directory of CSVs (use the corrected release)
+  unsw_nb15:
+    path: data/raw/unsw_nb15      # directory of CSVs
+
+split:
+  test_size: 0.2
+
+preprocess:
+  use_smote: false        # default off: SMOTE can create invalid flows + leak
+
+# --------------------------------------------------------------------------- #
+# Models
+# --------------------------------------------------------------------------- #
+models:
+  rf:
+    n_estimators: 200
+    max_depth: null       # null = grow fully
+  xgb:
+    n_estimators: 300
+    max_depth: 8
+    learning_rate: 0.1
+  svm:
+    C: 1.0
+    kernel: rbf
+    gamma: scale
+    train_subsample: 50000   # kernel SVM cannot train on millions of rows
+  mlp:
+    hidden: [256, 128, 64]
+    dropout: 0.3
+    lr: 0.001
+    weight_decay: 0.0001
+    epochs: 20            # raise to 50-100 for real datasets
+    batch_size: 512
+
+# --------------------------------------------------------------------------- #
+# Attacks. eps values are fractions of each feature's full [0,1] range.
+# n_eval_samples caps how many malicious test flows are attacked (runtime).
+# --------------------------------------------------------------------------- #
+attacks:
+  n_eval_samples: 1000    # raise for the final report (e.g. 5000-10000)
+  fgsm:
+    eps: 0.10
+  pgd:
+    eps: 0.10
+    eps_step: 0.01
+    max_iter: 40
+  jsma:
+    theta: 0.1            # per-step feature change
+    gamma: 0.2            # max fraction of features altered (sparsity / L0 budget)
+  blackbox:
+    enabled: true
+    n_samples: 200        # black-box is expensive; keep small
+    hopskipjump:
+      max_iter: 30
+      max_eval: 1000
+      init_eval: 100
+    zoo:
+      enabled: false      # ZOO is very slow; turn on only for a small final run
+      max_iter: 20
+      nb_parallel: 32
+      binary_search_steps: 5
+
+# --------------------------------------------------------------------------- #
+# Defenses
+# --------------------------------------------------------------------------- #
+defenses:
+  adv_train:
+    n_adv_samples: 5000   # adversarial malicious samples added to training
+  sanitization:
+    squeeze_bits: 4       # feature-squeezing precision (lower = stronger squeeze)
