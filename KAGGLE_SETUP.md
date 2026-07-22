@@ -33,21 +33,36 @@ artifacts back to your local repo for the attack/defense stages.
 ## Step 1 — Package the code (exclude data/results)
 
 The `data/` folder is ~1.5 GB, so keep **code** and **data** as two separate Kaggle
-Datasets. From the repo root in **PowerShell**:
+Datasets.
+
+> **Do NOT use PowerShell's `Compress-Archive`.** On Windows PowerShell 5.1 it writes
+> **backslash** path separators (`src\config.py`) into the zip, which is invalid per the
+> ZIP spec, and **Kaggle rejects the upload** with "contains a forbidden character in
+> name ('\')". Use the Python method below, which forces forward slashes.
+
+From the repo root, run:
 
 ```powershell
 cd "d:\major project\adversarial-ids"
-$stage = "$env:TEMP\adversarial-ids"
-Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
-New-Item -ItemType Directory $stage | Out-Null
-Copy-Item src,scripts,config.yaml,requirements.txt,kaggle_train.py $stage -Recurse
-Remove-Item "$stage\src\__pycache__" -Recurse -Force -ErrorAction SilentlyContinue
-Compress-Archive "$stage\*" "$env:TEMP\adversarial-ids-code.zip" -Force
-Write-Host "Created: $env:TEMP\adversarial-ids-code.zip"
+python -c "import zipfile, os
+files = ['config.yaml','requirements.txt','kaggle_train.py']
+dirs = ['src','scripts']
+out = os.path.join(os.environ['TEMP'], 'adversarial-ids-code.zip')
+with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:
+    for f in files: z.write(f, f)
+    for d in dirs:
+        for root,_,fs in os.walk(d):
+            if '__pycache__' in root: continue
+            for fn in fs:
+                if fn.endswith('.pyc'): continue
+                p = os.path.join(root,fn)
+                z.write(p, p.replace(os.sep,'/'))   # force forward slashes
+print('wrote', out)"
 ```
 
-This produces `adversarial-ids-code.zip` with `src/`, `config.yaml`, `scripts/`,
-`requirements.txt`, and `kaggle_train.py` at the top level.
+This produces `%TEMP%\adversarial-ids-code.zip` with `src/`, `config.yaml`, `scripts/`,
+`requirements.txt`, and `kaggle_train.py` at the top level, using forward-slash paths
+Kaggle accepts.
 
 ## Step 2 — Create two Kaggle Datasets
 
