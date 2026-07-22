@@ -23,6 +23,8 @@ log = get_logger("data_loaders")
 _CICIDS_DROP = [
     "Flow ID", "Source IP", "Src IP", "Destination IP", "Dst IP",
     "Source Port", "Src Port", "Fwd Header Length.1",
+    "id", "Id", "ID", "Unnamed: 0",
+    "Attempted Category",   # label-derived metadata (-1/1), not a flow feature
 ]
 _CICIDS_TIMESTAMP = ["Timestamp"]
 
@@ -142,6 +144,7 @@ def _find_col(df: pd.DataFrame, candidates):
 
 def _drop_if_present(df: pd.DataFrame, cols):
     present = [c for c in cols if c in df.columns]
+    present += [c for c in df.columns if c not in present and c.startswith("Unnamed:")]
     if present:
         log.info("Dropping identifier/leaky columns: %s", present)
     return df.drop(columns=present)
