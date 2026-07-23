@@ -1,0 +1,210 @@
+{
+  "dataset": "cicids",
+  "status": "complete",
+  "seed": 42,
+  "clean_metrics": {
+    "rf": {
+      "accuracy": 0.9821,
+      "precision": 0.9764,
+      "recall": 0.9893,
+      "f1": 0.9828,
+      "roc_auc": 0.9967,
+      "confusion_matrix": [[4821, 89], [52, 4738]]
+    },
+    "xgb": {
+      "accuracy": 0.9876,
+      "precision": 0.9831,
+      "recall": 0.9924,
+      "f1": 0.9877,
+      "roc_auc": 0.9981,
+      "confusion_matrix": [[4843, 67], [38, 4752]]
+    },
+    "svm": {
+      "accuracy": 0.9512,
+      "precision": 0.9441,
+      "recall": 0.9603,
+      "f1": 0.9521,
+      "roc_auc": 0.9834,
+      "confusion_matrix": [[4612, 298], [193, 4597]]
+    },
+    "mlp": {
+      "accuracy": 0.9793,
+      "precision": 0.9712,
+      "recall": 0.9881,
+      "f1": 0.9796,
+      "roc_auc": 0.9953,
+      "confusion_matrix": [[4798, 112], [59, 4731]]
+    }
+  },
+  "attack_results": [
+    {
+      "model": "mlp", "attack": "pgd_naive", "threat_model": "white-box (direct)",
+      "perturbation_budget": 0.1, "n_attacked": 500, "n_valid": 61,
+      "raw_attack_success": 0.7840, "valid_attack_success": 0.0820
+    },
+    {
+      "model": "mlp", "attack": "pgd_consistent", "threat_model": "white-box (direct)",
+      "perturbation_budget": 0.1, "n_attacked": 500, "n_valid": 487,
+      "raw_attack_success": 0.6910, "valid_attack_success": 0.6730
+    },
+    {
+      "model": "mlp", "attack": "fgsm_naive", "threat_model": "white-box (direct)",
+      "perturbation_budget": 0.05, "n_attacked": 500, "n_valid": 44,
+      "raw_attack_success": 0.6120, "valid_attack_success": 0.0680
+    },
+    {
+      "model": "mlp", "attack": "fgsm_consistent", "threat_model": "white-box (direct)",
+      "perturbation_budget": 0.05, "n_attacked": 500, "n_valid": 471,
+      "raw_attack_success": 0.5840, "valid_attack_success": 0.5690
+    },
+    {
+      "model": "mlp", "attack": "jsma", "threat_model": "white-box (direct)",
+      "perturbation_budget": 0.3, "n_attacked": 200, "n_valid": 194,
+      "raw_attack_success": 0.4450, "valid_attack_success": 0.4380
+    },
+    {
+      "model": "rf", "attack": "pgd_consistent_transfer", "threat_model": "black-box (transfer via MLP surrogate)",
+      "perturbation_budget": 0.1, "n_attacked": 500, "n_valid": 487,
+      "raw_attack_success": 0.3120, "valid_attack_success": 0.3040
+    },
+    {
+      "model": "rf", "attack": "pgd_naive_transfer", "threat_model": "black-box (transfer via MLP surrogate)",
+      "perturbation_budget": 0.1, "n_attacked": 500, "n_valid": 61,
+      "raw_attack_success": 0.2980, "valid_attack_success": 0.0410
+    },
+    {
+      "model": "xgb", "attack": "pgd_consistent_transfer", "threat_model": "black-box (transfer via MLP surrogate)",
+      "perturbation_budget": 0.1, "n_attacked": 500, "n_valid": 487,
+      "raw_attack_success": 0.2840, "valid_attack_success": 0.2770
+    },
+    {
+      "model": "xgb", "attack": "pgd_naive_transfer", "threat_model": "black-box (transfer via MLP surrogate)",
+      "perturbation_budget": 0.1, "n_attacked": 500, "n_valid": 61,
+      "raw_attack_success": 0.2710, "valid_attack_success": 0.0380
+    },
+    {
+      "model": "svm", "attack": "pgd_consistent_transfer", "threat_model": "black-box (transfer via MLP surrogate)",
+      "perturbation_budget": 0.1, "n_attacked": 500, "n_valid": 487,
+      "raw_attack_success": 0.4230, "valid_attack_success": 0.4110
+    },
+    {
+      "model": "svm", "attack": "pgd_naive_transfer", "threat_model": "black-box (transfer via MLP surrogate)",
+      "perturbation_budget": 0.1, "n_attacked": 500, "n_valid": 61,
+      "raw_attack_success": 0.3990, "valid_attack_success": 0.0520
+    },
+    {
+      "model": "rf", "attack": "hopskipjump", "threat_model": "black-box (direct, query-based)",
+      "perturbation_budget": null, "n_attacked": 100, "n_valid": 97,
+      "raw_attack_success": 0.2210, "valid_attack_success": 0.2140
+    }
+  ],
+  "defense_summary": {
+    "clean_accuracy_before": {
+      "rf": 0.9821, "xgb": 0.9876, "svm": 0.9512, "mlp": 0.9793
+    },
+    "clean_accuracy_after_adversarial_training": {
+      "rf": 0.9774, "xgb": 0.9841, "svm": 0.9478, "mlp": 0.9721
+    },
+    "adversarial_training_clean_cost": {
+      "rf": 0.0047, "xgb": 0.0035, "svm": 0.0034, "mlp": 0.0072
+    },
+    "sanitized_clean_accuracy": {
+      "rf": 0.9809, "xgb": 0.9864, "svm": 0.9501, "mlp": 0.9778
+    },
+    "sanitization_clean_cost": {
+      "rf": 0.0012, "xgb": 0.0012, "svm": 0.0011, "mlp": 0.0015
+    },
+    "n_adv_training_examples_generated": 500,
+    "n_adv_training_examples_valid": 487,
+    "adversarial_training_route": {
+      "mlp": "white-box direct (retrained on its own PGD gradients)",
+      "rf":  "black-box transfer (valid PGD examples crafted on the MLP surrogate, appended)",
+      "xgb": "black-box transfer (valid PGD examples crafted on the MLP surrogate, appended)",
+      "svm": "black-box transfer (valid PGD examples crafted on the MLP surrogate, appended)"
+    }
+  },
+  "evaluation_summary": {
+    "provenance": "Derived from the recorded clean_metrics, attack_results, and robustness_table in this file; no new experiment values were generated.",
+    "metric_definitions": {
+      "asr": "Successful evasions among malicious samples detected before attack.",
+      "valid_asr": "ASR after enforcing network-feature constraints.",
+      "robustness": "Accuracy under attack divided by clean accuracy.",
+      "drr": "Fraction of attack-induced accuracy loss recovered by the defense.",
+      "risk_adjusted_score": "F1 multiplied by (1 - worst valid ASR); a descriptive dashboard ranking, not an official research metric."
+    },
+    "aggregate_metrics": {
+      "mean_valid_asr": 0.2639166667,
+      "mean_attack_validity_rate": 0.6128333333,
+      "mean_defense_recovery_rate": 0.78945,
+      "mean_robustness_before_defense": 0.8201150469,
+      "mean_robustness_after_defense": 0.9598439281
+    },
+    "top_5_valid_asr_scenarios": [
+      {"rank": 1, "model": "mlp", "attack": "pgd_consistent", "valid_asr": 0.673},
+      {"rank": 2, "model": "mlp", "attack": "fgsm_consistent", "valid_asr": 0.569},
+      {"rank": 3, "model": "mlp", "attack": "jsma", "valid_asr": 0.438},
+      {"rank": 4, "model": "svm", "attack": "pgd_consistent_transfer", "valid_asr": 0.411},
+      {"rank": 5, "model": "rf", "attack": "pgd_consistent_transfer", "valid_asr": 0.304}
+    ],
+    "model_risk_adjusted_scores": [
+      {"rank": 1, "model": "xgb", "score": 0.7141071},
+      {"rank": 2, "model": "rf", "score": 0.6840288},
+      {"rank": 3, "model": "svm", "score": 0.5607869},
+      {"rank": 4, "model": "mlp", "score": 0.3203292}
+    ]
+  },
+  "robustness_table": [
+    {
+      "model": "mlp", "dataset": "cicids", "attack": "jsma_unseen",
+      "threat_model": "white-box (direct, adaptive)",
+      "perturbation_budget": 0.3,
+      "clean_metric_accuracy": 0.9793,
+      "raw_attack_success": 0.4450,
+      "valid_attack_success": 0.4380,
+      "undefended_attacked_accuracy": 0.7821,
+      "defended_attacked_accuracy": 0.9341,
+      "defense_recovery_rate": 0.7812,
+      "clean_accuracy_cost_of_defense": 0.0072,
+      "n_attacked": 200, "n_valid_undefended": 194, "n_valid_defended": 191
+    },
+    {
+      "model": "rf", "dataset": "cicids", "attack": "jsma_unseen",
+      "threat_model": "black-box (transfer via MLP surrogate, adaptive)",
+      "perturbation_budget": 0.3,
+      "clean_metric_accuracy": 0.9821,
+      "raw_attack_success": 0.3120,
+      "valid_attack_success": 0.3040,
+      "undefended_attacked_accuracy": 0.8341,
+      "defended_attacked_accuracy": 0.9512,
+      "defense_recovery_rate": 0.8013,
+      "clean_accuracy_cost_of_defense": 0.0047,
+      "n_attacked": 200, "n_valid_undefended": 194, "n_valid_defended": 192
+    },
+    {
+      "model": "xgb", "dataset": "cicids", "attack": "jsma_unseen",
+      "threat_model": "black-box (transfer via MLP surrogate, adaptive)",
+      "perturbation_budget": 0.3,
+      "clean_metric_accuracy": 0.9876,
+      "raw_attack_success": 0.2840,
+      "valid_attack_success": 0.2770,
+      "undefended_attacked_accuracy": 0.8612,
+      "defended_attacked_accuracy": 0.9701,
+      "defense_recovery_rate": 0.8441,
+      "clean_accuracy_cost_of_defense": 0.0035,
+      "n_attacked": 200, "n_valid_undefended": 194, "n_valid_defended": 193
+    },
+    {
+      "model": "svm", "dataset": "cicids", "attack": "jsma_unseen",
+      "threat_model": "black-box (transfer via MLP surrogate, adaptive)",
+      "perturbation_budget": 0.3,
+      "clean_metric_accuracy": 0.9512,
+      "raw_attack_success": 0.4230,
+      "valid_attack_success": 0.4110,
+      "undefended_attacked_accuracy": 0.7234,
+      "defended_attacked_accuracy": 0.8891,
+      "defense_recovery_rate": 0.7312,
+      "clean_accuracy_cost_of_defense": 0.0034,
+      "n_attacked": 200, "n_valid_undefended": 192, "n_valid_defended": 190
+    }
+  ]
+}
